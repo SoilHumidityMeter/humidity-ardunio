@@ -11,7 +11,7 @@ int buzzerPin = 8; // Buzzer pin
 
 
 
-int R = 11; // Red pin of RGB led
+int R = 12; // Red pin of RGB led
 int G = 9; // Green pin of RGB led
 int B = 10; // Blue pin of RGB led
 
@@ -23,7 +23,7 @@ int nemDegeri; // Current readed humidity
 
 int nemSensorPin = A0; // humidity sensor pin
 #define RX 13
-#define TX 12
+#define TX 11
 
 
 
@@ -43,6 +43,14 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 2); // initiliaze lcd screen
 SoftwareSerial esp8266(RX, TX);
 
 
+
+String response;
+int countTrueCommand;
+int countTimeCommand;
+boolean found = false;
+
+
+
 void loadColors();
 void lightLed(int r, int g, int b);
 void makeSound(int delayTime);
@@ -58,19 +66,15 @@ void setup()
   // set up pins
   pinMode(nemSensorPin, INPUT);
   pinMode(buzzerPin, OUTPUT);
-  pinMode(RX,INPUT);
-  pinMode(TX,OUTPUT);
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
   lcd.begin(16, 2); // start lcd screen
   lcd.print("Loading...");
   loadColors();
-  Serial.begin(9600);
-  esp8266.begin(115200);
+  Serial.begin(115200);
+  esp8266.begin(9600);
   
-	sendData("AT",2000,DEBUG);
-
   esp8266.println("AT");
   while (!esp8266.find("OK"))
   { // Mod?l haz?r olana kadar bekliyoruz.
@@ -201,54 +205,56 @@ void loadColors()
 
 
 
-void ESP_init()
-{
-  esp8266.println("AT");
-  while (!esp8266.find("OK"))
-  { // Mod?l haz?r olana kadar bekliyoruz.
-    esp8266.println("AT");
-    lcd.clear();
-    lcd.print("ESP8266 not found");
-  }
-  lcd.clear();
-  lcd.print("Found module");
-  esp8266.println("AT+CWMODE=1"); // ESP8266 mod?l?n? client olarak ayarl?yoruz.
-  while (!esp8266.find("OK"))
-  { // Ayar yap?lana kadar bekliyoruz.
-    esp8266.println("AT+CWMODE=1");
-    lcd.clear();
-    lcd.print("setting up");
-  }
+// void ESP_init()
+// {
+//   esp8266.println("AT");
+//   while (!esp8266.find("OK"))
+//   { // Mod?l haz?r olana kadar bekliyoruz.
+//     esp8266.println("AT");
+//     lcd.clear();
+//     lcd.print("ESP8266 not found");
+//   }
+//   lcd.clear();
+//   lcd.print("Found module");
+//   esp8266.println("AT+CWMODE=1"); // ESP8266 mod?l?n? client olarak ayarl?yoruz.
+//   while (!esp8266.find("OK"))
+//   { // Ayar yap?lana kadar bekliyoruz.
+//     esp8266.println("AT+CWMODE=1");
+//     lcd.clear();
+//     lcd.print("setting up");
+//   }
 
 
 
-  lcd.clear();
-  lcd.print("connecting...");
-  esp8266.println("AT+CWJAP=\"" + wifiName + "\",\"" + wifiPassword + "\""); // A??m?za ba?lan?yoruz.
-  while (!esp8266.find("OK"))
-    ;
-  lcd.clear();
-  lcd.print("connected");
-  delay(1000); // SSID va PASS
-}
+//   lcd.clear();
+//   lcd.print("connecting...");
+//   esp8266.println("AT+CWJAP=\"" + wifiName + "\",\"" + wifiPassword + "\""); // A??m?za ba?lan?yoruz.
+//   while (!esp8266.find("OK"))
+//     ;
+//   lcd.clear();
+//   lcd.print("connected");
+//   delay(1000); // SSID va PASS
+// }
 
 
 
-String sendData(String cmd, int timeout, boolean debug)
-{
-  String response = "";
-  cmd += "\r\n";
-  esp8266.print(cmd);
-  Serial.println();
-  Serial.println(cmd);
-  long int time = millis();
-  while ((time + timeout) > millis())
-  {
-    response = esp8266.readString();
-  }
-  if (debug)
-  {
-    Serial.print(response + "\r\n");
-  }
-  return response;
-}
+// String sendData(String cmd, int timeout, boolean debug)
+// {
+//   String response = "";
+//   cmd += "\r\n";
+//   esp8266.print(cmd);
+//   Serial.println();
+//   Serial.println(cmd);
+//   long int time = millis();
+//   while ((time + timeout) > millis())
+//   {
+//     response = esp8266.readString();
+//   }
+//   if (debug)
+//   {
+//     Serial.print(response + "\r\n");
+//   }
+//   return response;
+// }
+
+

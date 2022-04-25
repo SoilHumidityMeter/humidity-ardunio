@@ -12,8 +12,8 @@ int buzzerPin = 8; // Buzzer pin
 
 
 int R = 11; // Red pin of RGB led
-int G = 12; // Green pin of RGB led
-int B = 13; // Blue pin of RGB led
+int G = 9; // Green pin of RGB led
+int B = 10; // Blue pin of RGB led
 
 
 
@@ -22,8 +22,8 @@ int nemDegeri; // Current readed humidity
 
 
 int nemSensorPin = A0; // humidity sensor pin
-#define RX 10
-#define TX 9
+#define RX 13
+#define TX 12
 
 
 
@@ -43,14 +43,6 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 2); // initiliaze lcd screen
 SoftwareSerial esp8266(RX, TX);
 
 
-
-String response;
-int countTrueCommand;
-int countTimeCommand;
-boolean found = false;
-
-
-
 void loadColors();
 void lightLed(int r, int g, int b);
 void makeSound(int delayTime);
@@ -66,6 +58,8 @@ void setup()
   // set up pins
   pinMode(nemSensorPin, INPUT);
   pinMode(buzzerPin, OUTPUT);
+  pinMode(RX,INPUT);
+  pinMode(TX,OUTPUT);
   pinMode(R, OUTPUT);
   pinMode(G, OUTPUT);
   pinMode(B, OUTPUT);
@@ -75,6 +69,8 @@ void setup()
   Serial.begin(9600);
   esp8266.begin(115200);
   
+	sendData("AT",2000,DEBUG);
+
   esp8266.println("AT");
   while (!esp8266.find("OK"))
   { // Mod?l haz?r olana kadar bekliyoruz.
@@ -256,5 +252,3 @@ String sendData(String cmd, int timeout, boolean debug)
   }
   return response;
 }
-
-
